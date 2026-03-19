@@ -5,6 +5,7 @@ export default defineOAuthGitHubEventHandler({
     emailRequired: true,
   },
   async onSuccess(event, { user, tokens }) {
+     console.time('github-login')
     if (!user.email) {
       throw createError({
         statusCode: 500,
@@ -13,10 +14,11 @@ export default defineOAuthGitHubEventHandler({
     }
 
     const db = useDb();
+     console.time('db-query')
     let existingUser = await db.query.users.findFirst({
       where: eq(schema.users.email, user.email),
     });
-
+ console.timeEnd('db-query')
     if (!existingUser) {
       const result = await db
         .insert(schema.users)
@@ -41,7 +43,8 @@ export default defineOAuthGitHubEventHandler({
       user: userWithoutPassword,
       role: "admin"
     });
-    return sendRedirect(event, "/");
+     console.timeEnd('github-login')
+    return sendRedirect(event, "http://localhost:9000/#/List")
   },
   // Optional, will return a json error and 401 status code by default
   onError(event, error) {
