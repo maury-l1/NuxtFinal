@@ -47,8 +47,10 @@ export default defineOAuthGitHubEventHandler({
     return sendRedirect(event, "http://localhost:9000/#/List")
   },
   // Optional, will return a json error and 401 status code by default
-  onError(event, error) {
-    console.error("GitHub OAuth error:", error);
-    return sendRedirect(event, "/");
-  },
+ onError(event, error) {
+  console.error("GitHub OAuth error:", error)
+  console.error("Mensaje:", error.message)
+  console.error("Stack:", error.stack)
+  return sendRedirect(event, "http://localhost:9000/#/login?error=github")
+}
 });
