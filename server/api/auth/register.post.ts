@@ -10,6 +10,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  console.log("Registering user:", { name, email });
+
   await throwIfUserExists(email);
 
   const newUser = await registerUser(email, name, password);
